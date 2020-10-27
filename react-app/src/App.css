@@ -1,0 +1,9 @@
+@import '~antd/dist/antd.css';
+
+.App-header {
+  color: #fff;
+}
+
+.App-content {
+  padding: 50px;
+}

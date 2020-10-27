@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  react-app:
+    stdin_open: true
+    build:
+      context: '../react-app'
+    ports:
+      - '8080:3000'
+    volumes:
+      - '../react-app:/home/node/app:delegated'
+    command: 'run start'
+    container_name: 'react-app'
+
+  mongo:
+    image: mongo:latest
+    command: --auth
+    ports:
+      - 27017:27017
+    volumes:
+      - './data/mongo:/data/db:delegated'
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    container_name: 'mongo'
+
+  node-service:
+    depends_on:
+      - mongo
+    build:
+      context: '../node-service'
+    ports:
+      - '3000:3000'
+      - '9000:9000'
+    volumes:
+      - '../node-service:/home/node/app:delegated'
+    environment: 
+      MONGODB_URI: mongodb://root:root@mongo/topics?authSource=admin
+    command: 'run dev'
+    container_name: 'node-service'
