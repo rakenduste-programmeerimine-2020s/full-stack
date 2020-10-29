@@ -1,7 +1,7 @@
 import React from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, Popconfirm } from 'antd';
 
-const TopicTable = ({ topics }) => {  
+const TopicTable = ({ topics, deleteTopic }) => {  
 
   const columns = [
     {
@@ -15,8 +15,14 @@ const TopicTable = ({ topics }) => {
     {
       title: 'Archive',
       key: '_id',
+      dataIndex: '_id',
       render: (_id, record) => (
-       <Button>Archive</Button> 
+        <Popconfirm 
+          title='Are you sure?' 
+          onConfirm={() => deleteTopic(_id)}
+        >
+          <Button>Archive</Button>
+        </Popconfirm> 
       )
     },
   ];

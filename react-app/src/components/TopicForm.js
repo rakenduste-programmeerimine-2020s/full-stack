@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, notification } from 'antd';
 
-const TopicForm = () => {
+const TopicForm = ({ saveTopic }) => {
   const [form] = Form.useForm();
   const [, forceUpdate] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     forceUpdate({});
@@ -11,6 +12,20 @@ const TopicForm = () => {
 
   const onFinish = async (values) => {
     console.log('Finish:', values);
+    setLoading(true)
+
+    let data;
+
+    try {
+      data = await saveTopic(values.title)
+      notification.success({ message: "Saved" })
+      form.resetFields()
+    } catch {
+      notification.error({ message: "Error" })
+    }
+
+    setLoading(false)
+    console.log(data)
   };
 
   return (
@@ -20,15 +35,16 @@ const TopicForm = () => {
         name="title"
         rules={[{ required: true, message: 'Please add topic title!' }]}
       >
-        <Input />
+        <Input disabled={loading} />
       </Form.Item>
 
       <Form.Item shouldUpdate={true}>
-      {() => (
+        {() => (
           <Button
             type="primary"
             htmlType="submit"
-            disabled={ 
+            loading={loading}
+            disabled={
               !form.isFieldsTouched(true) ||
               form.getFieldsError().filter(({ errors }) => errors.length).length
             }

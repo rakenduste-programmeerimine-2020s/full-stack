@@ -17,7 +17,7 @@ router.get('/health', async (context) => {
 })
 
 router.get('/topics', async (context) => {
-  const topics = await Topic.find({ deletedAt: null })
+  const topics = await Topic.find({ deletedAt: null }).sort({ createdAt: -1 })
 
   context.status = 200
   context.body = topics
